@@ -1,0 +1,24 @@
+:root {
+ --backgound: black;
+ --text: ghostwhite;
+ --hearder: #194991;
+}
+
+
+body {
+    background-color: var(--backgound);
+    color: var(--text);
+}
+
+.jumbotron {
+    background-image: url(./images/wp3980183.jpg);
+}
+
+#cityH1 {
+margin-left: 4.5%;
+}
+
+.card {
+    color: var(--backgound);
+    margin: 1%;
+}
