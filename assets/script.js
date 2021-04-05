@@ -7,7 +7,7 @@ const api = "https://api.openweathermap.org/data/2.5/forecast?q=";
 const apiKey = "&units=metric&appid=dafe53ce7645ef5b27a79562190e601b";
 const weatherIconApi = "http://openweathermap.org/img/w/";
 const apiUV = "https://api.openweathermap.org/data/2.5/uvi?";
-const apiKeyUv = "&appid=dafe53ce7645ef5b27a79562190e601b"
+const apiKeyUv = "&appid=dafe53ce7645ef5b27a79562190e601b";
 
 
 let city = "";
@@ -37,7 +37,7 @@ function getForecast(event) {
             searchUvApi = apiUV + "lat=" + cityLat + "&lon=" + cityLon + apiKeyUv;
 
             fetch(searchUvApi)
-                .then(function (response) {
+                .then(response => {
                     if (response.ok) {
                         return response.json()
                     }
@@ -49,47 +49,6 @@ function getForecast(event) {
         });
 };
 
-
-// fetch(searchUvApi)
-//     .then(function (response) {
-//         if (response.ok) {
-//             return response.json()
-
-
-
-//                 .then(function () {
-//                     createCards(weatherData);
-//                 })
-
-// .then(function (data) {
-//     createCards(data);
-// })
-// }
-
-
-// } else {
-//     alert("No result found for " + city)
-// };
-//         })
-// }
-
-// fetches API data for UV information
-// function getUv() {
-//     searchUvApi = apiUV + "lat=" + cityLat + "&lon=" + cityLon + apiKeyUv;
-
-//     fetch(searchUvApi)
-//         .then(function (response) {
-//             if (response.ok) {
-//                 response.json().then(function (data) {
-//                     console.log(data);
-//                     uvData = data.value;
-//                     return
-//                 })
-//             } else {
-//                 alert("error")
-//             };
-//         })
-// }
 
 // create cards and set attributes
 function createCards(data) {
@@ -127,9 +86,9 @@ function createCards(data) {
             cardDate = $('<h1>').addClass('card-header').text(date);
             cardBody = $('<div>').addClass('card-body');
             cardBodyImg = $('<img>').attr('src', buildWeatherIconString).attr('alt', "weather icon");
-            cardTemp = $('<h2>').text("Temp(c): " + temp);
-            cardWind = $('<h2>').text("Wind: " + wind);
-            cardHumidity = $('<h2>').text("Humidity: " + humidity);
+            cardTemp = $('<h2>').text('Temp(c): ' + temp);
+            cardWind = $('<h2>').text('Wind: ' + wind);
+            cardHumidity = $('<h2>').text('Humidity: ' + humidity);
             // Build cards
             cardBody.append(cardBodyImg, cardTemp, cardWind, cardHumidity);
             newCardDiv.append(cardDate, cardBody);
@@ -139,6 +98,9 @@ function createCards(data) {
             count++
         }
     }
+
+    cardUv = $('<h2>').text('UV Index: ' + uvData);
+    $('.card').children().eq(1).append(cardUv);
 
 }
 
