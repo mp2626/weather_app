@@ -9,6 +9,7 @@ const weatherIconApi = "http://openweathermap.org/img/w/";
 const apiUV = "https://api.openweathermap.org/data/2.5/uvi?";
 const apiKeyUv = "&appid=dafe53ce7645ef5b27a79562190e601b";
 
+let searchStore = [];
 
 let city = "";
 let cityLat = "";
@@ -21,6 +22,7 @@ function getForecast(event) {
     event.preventDefault();
     city = $(event.target).parents().find("input").val().toLowerCase().trim();
     searchApi = api + city + apiKey;
+    $('#search-input').val('');
 
     fetch(searchApi)
         .then(response => {
@@ -43,12 +45,12 @@ function getForecast(event) {
                     }
                 })
                 .then(data => {
+                    console.log(data)
                     uvData = data.value;
                     createCards(weatherData);
                 });
         });
 };
-
 
 // create cards and set attributes
 function createCards(data) {
@@ -60,10 +62,6 @@ function createCards(data) {
     console.log(data.list);
 
     citySpan.text(" - " + data.city.name);
-
-    // uvData = getUv();
-    // issues no data logged??
-    console.log(uvData)
 
     if ($('#cards').children('div')) {
         cards.children().remove('div');
@@ -98,14 +96,24 @@ function createCards(data) {
             count++
         }
     }
-
+    // adds uv to fist card as per demo
     cardUv = $('<h2>').text('UV Index: ' + uvData);
     $('.card').children().eq(1).append(cardUv);
-
+    // need to add in color code
+    // calls save data function
+    saveData()
 }
 
 
 // save search function local storage
+
+function saveData() {
+    searchStore.unshift(city);
+    console.log(searchStore);
+    if (searchStore.length > 4) {
+        searchStore.pop();
+    }
+}
 
 // create last searched max of 5, if clicked updated cards
 // remove last from list
