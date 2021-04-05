@@ -2,38 +2,109 @@
 const searchButton = $("#search");
 const citySpan = $("#citySpan");
 const cards = $("#cards");
-
+// api vars for functions
 const api = "https://api.openweathermap.org/data/2.5/forecast?q=";
 const apiKey = "&units=metric&appid=dafe53ce7645ef5b27a79562190e601b";
 const weatherIconApi = "http://openweathermap.org/img/w/";
+const apiUV = "https://api.openweathermap.org/data/2.5/uvi?";
+const apiKeyUv = "&appid=dafe53ce7645ef5b27a79562190e601b"
 
-// store search
+
+let city = "";
+let cityLat = "";
+let cityLon = "";
+let weatherData = "";
+let uvData = "";
+
+// fetches API data for main forecast information and call create cards
 function getForecast(event) {
     event.preventDefault();
-    let city = $(event.target).parents().find("input").val().toLowerCase().trim();
+    city = $(event.target).parents().find("input").val().toLowerCase().trim();
     searchApi = api + city + apiKey;
 
     fetch(searchApi)
-        .then(function (response) {
+        .then(response => {
             if (response.ok) {
-                response.json().then(function (data) {
-                    createCards(data);
-                })
+                return response.json();
             } else {
                 alert("No result found for " + city)
             };
         })
-}
+        .then(data => {
+            weatherData = data;
+            cityLat = data.city.coord.lat;
+            cityLon = data.city.coord.lon;
+            searchUvApi = apiUV + "lat=" + cityLat + "&lon=" + cityLon + apiKeyUv;
+
+            fetch(searchUvApi)
+                .then(function (response) {
+                    if (response.ok) {
+                        return response.json()
+                    }
+                })
+                .then(data => {
+                    uvData = data.value;
+                    createCards(weatherData);
+                });
+        });
+};
+
+
+// fetch(searchUvApi)
+//     .then(function (response) {
+//         if (response.ok) {
+//             return response.json()
+
+
+
+//                 .then(function () {
+//                     createCards(weatherData);
+//                 })
+
+// .then(function (data) {
+//     createCards(data);
+// })
+// }
+
+
+// } else {
+//     alert("No result found for " + city)
+// };
+//         })
+// }
+
+// fetches API data for UV information
+// function getUv() {
+//     searchUvApi = apiUV + "lat=" + cityLat + "&lon=" + cityLon + apiKeyUv;
+
+//     fetch(searchUvApi)
+//         .then(function (response) {
+//             if (response.ok) {
+//                 response.json().then(function (data) {
+//                     console.log(data);
+//                     uvData = data.value;
+//                     return
+//                 })
+//             } else {
+//                 alert("error")
+//             };
+//         })
+// }
 
 // create cards and set attributes
 function createCards(data) {
 
     let currentDate = '';
     let count = 0;
-    console.log(currentDate);
+
     console.log(data);
     console.log(data.list);
+
     citySpan.text(" - " + data.city.name);
+
+    // uvData = getUv();
+    // issues no data logged??
+    console.log(uvData)
 
     if ($('#cards').children('div')) {
         cards.children().remove('div');
@@ -56,9 +127,9 @@ function createCards(data) {
             cardDate = $('<h1>').addClass('card-header').text(date);
             cardBody = $('<div>').addClass('card-body');
             cardBodyImg = $('<img>').attr('src', buildWeatherIconString).attr('alt', "weather icon");
-            cardTemp = $('<h2>').text("Temp (c) " + temp);
-            cardWind = $('<h2>').text("Wind:  " + wind);
-            cardHumidity = $('<h2>').text("Humidity - " + humidity);
+            cardTemp = $('<h2>').text("Temp(c): " + temp);
+            cardWind = $('<h2>').text("Wind: " + wind);
+            cardHumidity = $('<h2>').text("Humidity: " + humidity);
             // Build cards
             cardBody.append(cardBodyImg, cardTemp, cardWind, cardHumidity);
             newCardDiv.append(cardDate, cardBody);
@@ -68,13 +139,12 @@ function createCards(data) {
             count++
         }
     }
+
 }
-// append to cards / div
-
-
 
 
 // save search function local storage
+
 // create last searched max of 5, if clicked updated cards
 // remove last from list
 
