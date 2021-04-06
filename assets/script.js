@@ -97,8 +97,18 @@ function createCards(data) {
         }
     }
     // adds uv to fist card as per demo
-    cardUv = $('<h2>').text('UV Index: ' + uvData);
+    cardUv = $('<h2>').text('UV Index: ' + uvData).addClass('uv');
     $('.card').children().eq(1).append(cardUv);
+
+    // setup backgound of uv rating based on rating
+    if (uvData <= 4) {
+        $('.uv').css('background-color', 'rgb(203, 236, 203)');
+    } else if (uvData > 4 && uvData < 9) {
+        $('.uv').css('background-color', 'rgb(235, 176, 155)');
+    } else {
+        $('.uv').css('background-color', 'rgb(231, 142, 142)')
+    };
+
     // need to add in color code
     // calls save data function
     saveData()
@@ -108,15 +118,31 @@ function createCards(data) {
 // save search function local storage
 
 function saveData() {
-    searchStore.unshift(city);
-    console.log(searchStore);
-    if (searchStore.length > 4) {
+
+    if (searchStore != null) {
+        searchStore.unshift(city);
+    } else {
+        searchStore = [];
+        searchStore.push(city);
+        console.log(searchStore);
+    }
+
+    if (searchStore.length > 5) {
         searchStore.pop();
+    }
+
+    localStorage.setItem('locationSearch', JSON.stringify(searchStore));
+}
+
+function renderSavedLocations() {
+    searchStore = JSON.parse(localStorage.getItem('locationSearch'));
+
+    for (let i = 0; i < searchStore.length; i++) {
+        console.log(searchStore[i]);
     }
 }
 
-// create last searched max of 5, if clicked updated cards
-// remove last from list
-
 searchButton.on("click", getForecast)
+
+renderSavedLocations()
 
