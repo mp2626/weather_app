@@ -116,7 +116,6 @@ function createCards(data) {
 
 
 // save search function local storage
-
 function saveData() {
 
     if (searchStore != null) {
@@ -126,20 +125,34 @@ function saveData() {
         searchStore.push(city);
         console.log(searchStore);
     }
-
+    // prevents the list length exceeding 5, removes last in list
     if (searchStore.length > 5) {
         searchStore.pop();
     }
 
     localStorage.setItem('locationSearch', JSON.stringify(searchStore));
+
+    if ($('#storedLocations').children('button')) {
+        $('#storedLocations').children().remove('button');
+    }
+    renderSavedLocations();
 }
 
 function renderSavedLocations() {
     searchStore = JSON.parse(localStorage.getItem('locationSearch'));
 
-    for (let i = 0; i < searchStore.length; i++) {
-        console.log(searchStore[i]);
+    if (searchStore != null) {
+        for (let i = 0; i < searchStore.length; i++) {
+            console.log(searchStore[i]);
+            let newButton = $("#storedLocations");
+            button = $('<button>').addClass('btn card btn-light col-5 col-md-3').attr('type', "submit").attr('id', "searchBtn").text(searchStore[i]);
+            newButton.append(button);
+        }
     }
+}
+
+function locationListRender() {
+
 }
 
 searchButton.on("click", getForecast)

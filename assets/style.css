@@ -22,3 +22,13 @@ margin-left: 4.5%;
     color: var(--backgound);
     margin: 1%;
 }
+
+.card h1 {
+    font-size: 35px;
+}
+
+#searchBtn {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    align-items: center;
+}
