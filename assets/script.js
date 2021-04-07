@@ -2,6 +2,7 @@
 const searchButton = $("#search");
 const citySpan = $("#citySpan");
 const cards = $("#cards");
+const locationStore = $("#storedLocations");
 // api vars for functions
 const api = "https://api.openweathermap.org/data/2.5/forecast?q=";
 const apiKey = "&units=metric&appid=dafe53ce7645ef5b27a79562190e601b";
@@ -19,25 +20,37 @@ let uvData = "";
 
 // fetches API data for main forecast information and call create cards
 function getForecast(event) {
+
     event.preventDefault();
-    city = $(event.target).parents().find("input").val().toLowerCase().trim();
+    // checks for event target to gather city name from
+    if (event.target.id == "search") {
+        city = $(event.target).parents().find("input").val().toLowerCase().trim();
+    } else {
+        city = event.target.innerText;
+    }
+
+    // builds search for api call 
     searchApi = api + city + apiKey;
     $('#search-input').val('');
 
+    // calls apis required to proved weather data and calls create card function once ready
     fetch(searchApi)
         .then(response => {
             if (response.ok) {
                 return response.json();
             } else {
-                alert("No result found for " + city)
+                alert("No result found")
             };
         })
         .then(data => {
             weatherData = data;
-            cityLat = data.city.coord.lat;
-            cityLon = data.city.coord.lon;
-            searchUvApi = apiUV + "lat=" + cityLat + "&lon=" + cityLon + apiKeyUv;
-
+            if (data != null) {
+                cityLat = data.city.coord.lat;
+                cityLon = data.city.coord.lon;
+                searchUvApi = apiUV + "lat=" + cityLat + "&lon=" + cityLon + apiKeyUv;
+            } else {
+                return
+            }
             fetch(searchUvApi)
                 .then(response => {
                     if (response.ok) {
@@ -45,7 +58,6 @@ function getForecast(event) {
                     }
                 })
                 .then(data => {
-                    console.log(data)
                     uvData = data.value;
                     createCards(weatherData);
                 });
@@ -58,11 +70,9 @@ function createCards(data) {
     let currentDate = '';
     let count = 0;
 
-    console.log(data);
-    console.log(data.list);
-
     citySpan.text(" - " + data.city.name);
 
+    // clears divs to reloads new cities divs 
     if ($('#cards').children('div')) {
         cards.children().remove('div');
     }
@@ -96,34 +106,38 @@ function createCards(data) {
             count++
         }
     }
-    // adds uv to fist card as per demo
-    cardUv = $('<h2>').text('UV Index: ' + uvData).addClass('uv');
+    // adds uv to fist card as per requirements
+    cardUv = $('<h2>').text('UV Index: ').addClass('uv');
+    span = $('<span>').text(uvData).addClass('span');
+    cardUv.append(span);
     $('.card').children().eq(1).append(cardUv);
 
-    // setup backgound of uv rating based on rating
+    // sets span background uv rating based
     if (uvData <= 4) {
-        $('.uv').css('background-color', 'rgb(203, 236, 203)');
+        $('.span').css('background-color', 'rgb(203, 236, 203)');
     } else if (uvData > 4 && uvData < 9) {
-        $('.uv').css('background-color', 'rgb(235, 176, 155)');
+        $('.span').css('background-color', 'rgb(235, 176, 155)');
     } else {
-        $('.uv').css('background-color', 'rgb(231, 142, 142)')
+        $('.span').css('background-color', 'rgb(231, 142, 142)');
     };
 
-    // need to add in color code
     // calls save data function
     saveData()
 }
-
 
 // save search function local storage
 function saveData() {
 
     if (searchStore != null) {
-        searchStore.unshift(city);
+        for (i = 0; i < searchStore.length; i++) {
+            // prevents duplicates being added to stored searches if it already exists
+            if (searchStore[i] == city) {
+                return
+            }
+        } searchStore.unshift(city);
     } else {
         searchStore = [];
         searchStore.push(city);
-        console.log(searchStore);
     }
     // prevents the list length exceeding 5, removes last in list
     if (searchStore.length > 5) {
@@ -138,12 +152,12 @@ function saveData() {
     renderSavedLocations();
 }
 
+// renders saved searches
 function renderSavedLocations() {
     searchStore = JSON.parse(localStorage.getItem('locationSearch'));
 
     if (searchStore != null) {
         for (let i = 0; i < searchStore.length; i++) {
-            console.log(searchStore[i]);
             let newButton = $("#storedLocations");
             button = $('<button>').addClass('btn card btn-light col-5 col-md-3').attr('type', "submit").attr('id', "searchBtn").text(searchStore[i]);
             newButton.append(button);
@@ -151,11 +165,10 @@ function renderSavedLocations() {
     }
 }
 
-function locationListRender() {
+// listens for clicks on search buttons or stored searches
+searchButton.on("click", getForecast);
+locationStore.on("click", getForecast);
 
-}
-
-searchButton.on("click", getForecast)
-
+// loads stored searches when the app is opened
 renderSavedLocations()
 

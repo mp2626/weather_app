@@ -10,6 +10,10 @@ body {
     color: var(--text);
 }
 
+h2 {
+    font-size: 30px;
+}
+
 .jumbotron {
     background-image: url(./images/wp3980183.jpg);
 }
