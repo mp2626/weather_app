@@ -57,6 +57,7 @@ https://mp2626.github.io/weather_app/
 * BootStrap
 * JQuery
 * Moment JS
+* https://openweathermap.org/api
 
 # Authors
 Contributor - Michael Perrin
