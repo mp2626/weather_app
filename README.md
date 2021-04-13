@@ -49,15 +49,11 @@ https://github.com/mp2626/weather_app
 
 https://mp2626.github.io/weather_app/
 
-# Programming Languages/APIs
+# Programming Languages
 
 * HTML
 * CSS
 * JavaScript
-* BootStrap
-* JQuery
-* Moment JS
-* https://openweathermap.org/api
 
 # Authors
 Contributor - Michael Perrin

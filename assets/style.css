@@ -2,11 +2,14 @@
  --backgound: black;
  --text: ghostwhite;
  --hearder: #194991;
+ --orangeCard: rgb(252, 114, 51, 0.6);
+ --orangeCardOP: rgb(252, 114, 51, 0);
+ --orange:#fc7233;
 }
 
 
 body {
-    background-color: var(--backgound);
+    background-image: url(./images/wp3594884.jpg);
     color: var(--text);
 }
 
@@ -15,7 +18,7 @@ h2 {
 }
 
 .jumbotron {
-    background-image: url(./images/wp3980183.jpg);
+    background-color: var(--orangeCardOP);
 }
 
 #cityH1 {
@@ -23,7 +26,9 @@ margin-left: 4.5%;
 }
 
 .card {
-    color: var(--backgound);
+    background-color: var(--orangeCard);
+    border: 1.5px solid var(--orange);
+    color: var(--text);
     margin: 1%;
 }
 
@@ -31,8 +36,10 @@ margin-left: 4.5%;
     font-size: 35px;
 }
 
-#searchBtn {
-    margin-top: 1%;
+/* #search {
     margin-bottom: 1%;
     align-items: center;
-}
+    background-color: var(--orangeCard);
+    border: 1.5px solid var(--orange);
+    color: var(--text);
+} */
